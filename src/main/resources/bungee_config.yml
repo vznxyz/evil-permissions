@@ -1,0 +1,17 @@
+# The rank groups that are active on this server. Players that are assigned ranks that aren't active won't
+# receive any of the permissions from that rank.
+active-rank-groups: ['GLOBAL']
+
+# MongoDB connection and authentication settings
+mongo:
+  host: '127.0.0.1'
+  port: '27017'
+  username: 'admin'
+  password: ''
+
+# Redis connection and authentication settings
+redis:
+  host: '127.0.0.1'
+  port: 6379
+  password: ''
+  dbId: 0

@@ -1,0 +1,127 @@
+package net.evilblock.permissions.database.impl
+
+import com.mongodb.MongoClient
+import com.mongodb.client.MongoCollection
+import com.mongodb.client.model.ReplaceOptions
+import net.evilblock.pidgin.message.Message
+import net.evilblock.permissions.EvilPermissions
+import net.evilblock.permissions.rank.RankSerializer
+import net.evilblock.permissions.database.Database
+import net.evilblock.permissions.rank.Rank
+import net.evilblock.permissions.user.User
+import net.evilblock.permissions.user.UserSerializer
+import org.bson.Document
+import java.lang.RuntimeException
+import java.util.*
+
+class MongoDatabase : Database {
+
+    private val client: MongoClient = EvilPermissions.instance.plugin.getMongoClient()
+    private val ranksCollection: MongoCollection<Document> = client.getDatabase("wonder_permissions").getCollection("ranks")
+    private val usersCollection: MongoCollection<Document> = client.getDatabase("wonder_permissions").getCollection("users")
+
+    init {
+        ranksCollection.createIndex(Document("id", 1))
+        usersCollection.createIndex(Document("id", 1))
+    }
+
+    override fun fetchRank(id: String): Rank? {
+        val document = ranksCollection.find(Document("id", id)).first()
+        if (document != null) {
+            try {
+                val rank = RankSerializer.deserialize(document)
+                for (inheritedRankId in document.getList("inheritedRanks", String::class.java)) {
+                    val inheritedRank = EvilPermissions.instance.rankHandler.getRankById(inheritedRankId)
+                    if (inheritedRank != null) {
+                        rank.inheritedRanks.add(inheritedRank)
+                    }
+                }
+            } catch (e: Exception) {
+                if (document.containsKey("id")) {
+                    throw RuntimeException("Failed to load rank from document: " + document.getString("id"), e)
+                } else {
+                    throw RuntimeException("Failed to load rank from document: Couldn't identify rank ID", e)
+                }
+            }
+        }
+        return null
+    }
+
+    override fun fetchRanks(): List<Rank> {
+        val fetchedRanks = hashMapOf<Rank, List<String>>()
+
+        // fetch documents and deserialize into rank objects
+        for (document in ranksCollection.find()) {
+            try {
+                fetchedRanks[RankSerializer.deserialize(document)] = document.getList("inheritedRanks", String::class.java)
+            } catch (e: Exception) {
+                if (document.containsKey("id")) {
+                    throw RuntimeException("Failed to load rank from document: " + document.getString("id"), e)
+                } else {
+                    throw RuntimeException("Failed to load rank from document: Couldn't identify rank ID", e)
+                }
+            }
+        }
+
+        // copy data to existing references
+        for (deserializedRank in fetchedRanks.keys) {
+            val internalRank: Rank = EvilPermissions.instance.rankHandler.getRankById(deserializedRank.id) ?: deserializedRank
+
+            if (deserializedRank !== internalRank) {
+                internalRank.copyFrom(deserializedRank)
+            }
+        }
+
+        // setup inheritance
+        for (rankEntry in fetchedRanks) {
+            var internalRank: Rank? = EvilPermissions.instance.rankHandler.getRankById(rankEntry.key.id)
+
+            if (internalRank == null) {
+                internalRank = rankEntry.key
+            }
+
+            for (inheritedRankId in rankEntry.value) {
+                val inheritedRank = fetchedRanks.keys.firstOrNull { it.id == inheritedRankId }
+                if (inheritedRank != null) {
+                    internalRank.inheritedRanks.add(inheritedRank)
+                }
+            }
+        }
+
+        return fetchedRanks.keys.toList()
+    }
+
+    override fun saveRank(rank: Rank) {
+        ranksCollection.replaceOne(Document("id", rank.id), RankSerializer.serialize(rank), ReplaceOptions().upsert(true))
+        EvilPermissions.instance.pidgin.sendMessage(Message("RANK_UPDATE", mapOf("id" to rank.id, "action" to "UPDATE")))
+    }
+
+    override fun deleteRank(rank: Rank) {
+        ranksCollection.deleteOne(Document("id", rank.id))
+        EvilPermissions.instance.pidgin.sendMessage(Message("RANK_UPDATE", mapOf("id" to rank.id, "action" to "DELETE")))
+    }
+
+    override fun fetchUser(uniqueId: UUID): User? {
+        val document = usersCollection.find(Document("id", uniqueId.toString())).first()
+
+        if (document != null) {
+            return UserSerializer.deserialize(document)
+        }
+
+        return null
+    }
+
+    override fun saveUser(user: User) {
+        usersCollection.replaceOne(Document("id", user.uniqueId.toString()), UserSerializer.serialize(user), ReplaceOptions().upsert(true))
+    }
+
+    override fun resetUsersOneLetterRanks() {
+        for (document in usersCollection.find()) {
+            val user = UserSerializer.deserialize(document)
+            if (user.grants.removeIf { it.rank.id.length == 1 }) {
+                saveUser(user)
+            }
+        }
+    }
+
+}

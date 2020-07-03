@@ -1,0 +1,20 @@
+# If set to true, chat messages will be formatted using the format specified at 'chat-format'.
+format-chat: false
+
+# The format of chat messages. The chat format supports the following placeholders:
+# 'rankDisplayName' = the rank's display name
+# 'rankPlayerListPrefix' = the rank's player list prefix
+# 'rankChatPrefix' = the rank's chat prefix
+# 'rankColor' = the rank's color
+chat-format: "{rankChatPrefix}%s&r: %s"
+
+# If set to true, each player's rank prefix will be included in their display name.
+# If set to false, each player's display name will be their active rank's color followed by their username.
+use-prefix-in-display-name: false
+
+# If set to true, we'll edit the player's tab-list username.
+set-player-list-name: false
+
+# The rank groups that are active on this server. Players that are assigned ranks that aren't active won't
+# receive any of the permissions from that rank.
+active-rank-groups: ['GLOBAL']

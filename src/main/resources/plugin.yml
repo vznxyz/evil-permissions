@@ -1,0 +1,11 @@
+name: EvilPermissions
+version: 1.0
+description: Powerful permissions by simple design
+author: joeleoli
+main: net.evilblock.permissions.plugin.bukkit.BukkitPlugin
+depend:
+  - Vault
+  - Cubed
+softdepend:
+  - PlaceholderAPI
+  - MVdWPlaceholderAPI
