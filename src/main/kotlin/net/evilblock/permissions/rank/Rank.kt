@@ -2,13 +2,14 @@ package net.evilblock.permissions.rank
 
 import net.evilblock.permissions.EvilPermissions
 import net.evilblock.permissions.util.Permissions
+import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 class Rank(var id: String,
            var displayName: String,
-           var displayColor: String,
+           private var displayColor: String,
            var displayOrder: Int,
            /**
             * The prefix that can be used in chat formatting.
@@ -31,7 +32,7 @@ class Rank(var id: String,
     constructor(name: String) : this(
         id = name,
         displayName = name,
-        displayColor = "&f",
+        displayColor = ChatColor.WHITE.toString(),
         displayOrder = 999,
         prefix = "",
         playerListPrefix = "",
@@ -164,6 +165,14 @@ class Rank(var id: String,
         return null
     }
 
+    fun getDisplayColor(): String {
+        return ChatColor.COLOR_CHAR + displayColor
+    }
+
+    fun setDisplayColor(color: ChatColor) {
+        displayColor = color.toString()
+    }
+
     fun getDisplayColorChar(): String {
         return displayColor.toCharArray()[1].toString()
     }
@@ -193,6 +202,18 @@ class Rank(var id: String,
 
     override fun equals(other: Any?): Boolean {
         return other is Rank && this.id == other.id
+    }
+
+    /**
+     * Fixes missing/renamed fields to fix version compatibility.
+     */
+    fun runCompatibilityFix() {
+        if (displayColor == null) {
+            displayColor = ChatColor.WHITE.toString()
+        }
+        if (displayNamePrefix == null) {
+            displayNamePrefix = ""
+        }
     }
 
 }

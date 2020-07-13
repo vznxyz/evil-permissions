@@ -7,6 +7,7 @@ import net.evilblock.cubed.Cubed
 import net.evilblock.pidgin.message.Message
 import net.evilblock.permissions.EvilPermissions
 import net.evilblock.permissions.database.Database
+import net.evilblock.permissions.plugin.bukkit.BukkitPlugin
 import net.evilblock.permissions.rank.Rank
 import net.evilblock.permissions.user.User
 import net.evilblock.permissions.user.UserSerializer
@@ -17,8 +18,8 @@ import java.util.*
 class MongoDatabase : Database {
 
     private val client: MongoClient = EvilPermissions.instance.plugin.getMongoClient()
-    private val ranksCollection: MongoCollection<Document> = client.getDatabase("wonder_permissions").getCollection("ranks")
-    private val usersCollection: MongoCollection<Document> = client.getDatabase("wonder_permissions").getCollection("users")
+    private val ranksCollection: MongoCollection<Document> = client.getDatabase(BukkitPlugin.instance.config.getString("database-name")).getCollection("ranks")
+    private val usersCollection: MongoCollection<Document> = client.getDatabase(BukkitPlugin.instance.config.getString("database-name")).getCollection("users")
 
     init {
         ranksCollection.createIndex(Document("id", 1))
@@ -30,6 +31,10 @@ class MongoDatabase : Database {
         if (document != null) {
             try {
                 val rank = Cubed.gson.fromJson(document.toJson(), Rank::class.java)
+
+                // keep this check, it allows database compatibility between versions
+                rank.runCompatibilityFix()
+
                 for (inheritedRankId in document.getList("inheritedRanks", String::class.java)) {
                     val inheritedRank = EvilPermissions.instance.rankHandler.getRankById(inheritedRankId)
                     if (inheritedRank != null) {
@@ -54,6 +59,10 @@ class MongoDatabase : Database {
         for (document in ranksCollection.find()) {
             try {
                 val rank = Cubed.gson.fromJson(document.toJson(), Rank::class.java)
+
+                // keep this check, it allows database compatibility between versions
+                rank.runCompatibilityFix()
+
                 fetchedRanks[rank] = document.getList("inheritedRanks", String::class.java)
             } catch (e: Exception) {
                 if (document.containsKey("id")) {

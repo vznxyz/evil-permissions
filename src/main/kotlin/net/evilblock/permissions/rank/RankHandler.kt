@@ -1,6 +1,7 @@
 package net.evilblock.permissions.rank
 
 import net.evilblock.permissions.EvilPermissions
+import org.bukkit.ChatColor
 import java.util.*
 
 class RankHandler {
@@ -14,7 +15,7 @@ class RankHandler {
     private val defaultRank = Rank(
         id = "default",
         displayName = "Default",
-        displayColor = "&f",
+        displayColor = ChatColor.WHITE.toString(),
         displayOrder = Integer.MAX_VALUE,
         prefix = "",
         playerListPrefix = "",

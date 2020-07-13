@@ -55,15 +55,8 @@ class BukkitUserListeners : Listener {
             if (user != null) {
                 val activeRank = user.getBestDisplayRank()
 
-                val format = BukkitPlugin.instance.config.getString("chat-format")
-                    .replace("{rankDisplayName}", activeRank.displayName)
-                    .replace("{rankColor}", activeRank.displayColor)
-                    .replace("{rankDisplayColor}", activeRank.displayColor)
-                    .replace("{rankPrefix}", activeRank.prefix)
-                    .replace("{rankPlayerListPrefix}", activeRank.playerListPrefix)
-                    .replace("{rankDisplayNamePrefix}", activeRank.displayNamePrefix)
-
-                    event.format = ChatColor.translateAlternateColorCodes('&', format)
+                val format = activeRank.processPlaceholders(BukkitPlugin.instance.config.getString("chat-format"))
+                event.format = ChatColor.translateAlternateColorCodes('&', format)
             }
         }
     }

@@ -162,7 +162,7 @@ class RanksMenu(val group: String) : PaginatedMenu() {
             description.add("${ChatColor.GRAY}Display order: ${ChatColor.RESET}${rank.displayOrder}")
             description.add("${ChatColor.GRAY}Prefix: ${ChatColor.RESET}${rank.prefix}Example")
             description.add("${ChatColor.GRAY}Player List Prefix: ${ChatColor.RESET}${rank.playerListPrefix}Example")
-            description.add("${ChatColor.GRAY}Game Color: ${ChatColor.RESET}${rank.displayColor}&${rank.getDisplayColorChar()}")
+            description.add("${ChatColor.GRAY}Game Color: ${ChatColor.RESET}${rank.getDisplayColor()}&${rank.getDisplayColorChar()}")
             description.add("${ChatColor.GRAY}Default: ${ChatColor.RESET}${rank.default}")
             description.add("")
             description.add("${ChatColor.YELLOW}${ChatColor.BOLD}Groups")
@@ -235,7 +235,7 @@ class RanksMenu(val group: String) : PaginatedMenu() {
                     messages.add("${ChatColor.GRAY}Display order: ${ChatColor.RESET}${rank.displayOrder}")
                     messages.add("${ChatColor.GRAY}Prefix: ${ChatColor.RESET}${ChatColor.translateAlternateColorCodes('&', rank.prefix)}Example")
                     messages.add("${ChatColor.GRAY}Player List Prefix: ${ChatColor.RESET}${ChatColor.translateAlternateColorCodes('&', rank.playerListPrefix)}Example")
-                    messages.add("${ChatColor.GRAY}Game Color: ${ChatColor.RESET}${rank.displayColor}&${rank.getDisplayColorChar()}")
+                    messages.add("${ChatColor.GRAY}Game Color: ${ChatColor.RESET}${rank.getDisplayColor()}&${rank.getDisplayColorChar()}")
                     messages.add("${ChatColor.GRAY}Default: ${ChatColor.RESET}${rank.default}")
                     messages.add("")
 

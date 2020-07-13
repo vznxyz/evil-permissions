@@ -43,7 +43,7 @@ class SelectColorMenu(private val parent: EditAttributesMenu, private val rank: 
         }
 
         override fun getDamageValue(player: Player): Byte {
-            val colorChar = if (rank.displayColor.isEmpty()) 'f' else rank.getDisplayColorChar()[0]
+            val colorChar = if (rank.getDisplayColor().isEmpty()) 'f' else rank.getDisplayColorChar()[0]
             return (ColorMap.woolMap[ChatColor.getByChar(colorChar)] ?: 15).toByte()
         }
 
@@ -81,7 +81,7 @@ class SelectColorMenu(private val parent: EditAttributesMenu, private val rank: 
         override fun clicked(player: Player, slot: Int, clickType: ClickType, view: InventoryView) {
             player.closeInventory()
 
-            rank.displayColor = "&" + color.char
+            rank.setDisplayColor(color)
 
             BukkitPlugin.instance.server.scheduler.runTaskAsynchronously(BukkitPlugin.instance) {
                 EvilPermissions.instance.database.saveRank(rank)
