@@ -50,20 +50,22 @@ class BukkitUser(uuid: UUID) : User(uuid) {
                     }
                 }
 
-                if (plugin.config.getBoolean("set-player-list-name")) {
-                    var playerListName = getPlayerListPrefix() + player.name
+                if (plugin.config.getBoolean("players.set-display-name", true)) {
+                    player.displayName = getBestDisplayRank()
+                        .processPlaceholders(plugin.config.getString("players.display-name-format"))
+                        .replace("{playerName}", player.name)
+                }
+
+                if (plugin.config.getBoolean("players.set-player-list-name", true)) {
+                    var playerListName = getBestDisplayRank()
+                        .processPlaceholders(plugin.config.getString("players.player-list-name-format"))
+                        .replace("{playerName}", player.name)
 
                     if (playerListName.length > 16) {
                         playerListName = playerListName.substring(0, 15)
                     }
 
                     player.playerListName = playerListName
-                }
-
-                player.displayName = if (plugin.config.getBoolean("use-prefix-in-display-name")) {
-                    getBestDisplayRank().getChatPrefix() + player.name
-                } else {
-                    getBestDisplayRank().gameColor.replace('&', '\u00A7') + player.name
                 }
             } catch (e: Exception) {
                 BukkitPlugin.instance.logger.severe("Failed to apply user attributes to player ${getUsername()}:")
