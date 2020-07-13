@@ -156,14 +156,15 @@ class RanksMenu(val group: String) : PaginatedMenu() {
 
         override fun getDescription(player: Player): List<String> {
             val description = arrayListOf<String>()
-            description.add("${ChatColor.YELLOW}${ChatColor.BOLD}Metadata")
             description.add("${ChatColor.GRAY}Name: ${ChatColor.RESET}${rank.id}")
             description.add("${ChatColor.GRAY}Display name: ${ChatColor.RESET}${rank.displayName}")
+            description.add("${ChatColor.GRAY}Display color: ${ChatColor.RESET}${rank.getDisplayColor()}&${rank.getDisplayColorChar()}")
             description.add("${ChatColor.GRAY}Display order: ${ChatColor.RESET}${rank.displayOrder}")
-            description.add("${ChatColor.GRAY}Prefix: ${ChatColor.RESET}${rank.prefix}Example")
-            description.add("${ChatColor.GRAY}Player List Prefix: ${ChatColor.RESET}${rank.playerListPrefix}Example")
-            description.add("${ChatColor.GRAY}Game Color: ${ChatColor.RESET}${rank.getDisplayColor()}&${rank.getDisplayColorChar()}")
+            description.add("${ChatColor.GRAY}Prefix: ${ChatColor.RESET}${ChatColor.translateAlternateColorCodes('&', rank.prefix)}Example")
+            description.add("${ChatColor.GRAY}Player list prefix: ${ChatColor.RESET}${ChatColor.translateAlternateColorCodes('&', rank.playerListPrefix)}Example")
+            description.add("${ChatColor.GRAY}Display name prefix: ${ChatColor.RESET}${ChatColor.translateAlternateColorCodes('&', rank.displayNamePrefix)}Example")
             description.add("${ChatColor.GRAY}Default: ${ChatColor.RESET}${rank.default}")
+            description.add("${ChatColor.GRAY}Hidden: ${ChatColor.RESET}${rank.hidden}")
             description.add("")
             description.add("${ChatColor.YELLOW}${ChatColor.BOLD}Groups")
 
@@ -232,11 +233,13 @@ class RanksMenu(val group: String) : PaginatedMenu() {
                     messages.add("${ChatColor.YELLOW}${ChatColor.BOLD}Detailed information of ${rank.displayName}")
                     messages.add("${ChatColor.GRAY}Name: ${ChatColor.RESET}${rank.id}")
                     messages.add("${ChatColor.GRAY}Display name: ${ChatColor.RESET}${rank.displayName}")
+                    messages.add("${ChatColor.GRAY}Display color: ${ChatColor.RESET}${rank.getDisplayColor()}&${rank.getDisplayColorChar()}")
                     messages.add("${ChatColor.GRAY}Display order: ${ChatColor.RESET}${rank.displayOrder}")
                     messages.add("${ChatColor.GRAY}Prefix: ${ChatColor.RESET}${ChatColor.translateAlternateColorCodes('&', rank.prefix)}Example")
-                    messages.add("${ChatColor.GRAY}Player List Prefix: ${ChatColor.RESET}${ChatColor.translateAlternateColorCodes('&', rank.playerListPrefix)}Example")
-                    messages.add("${ChatColor.GRAY}Game Color: ${ChatColor.RESET}${rank.getDisplayColor()}&${rank.getDisplayColorChar()}")
+                    messages.add("${ChatColor.GRAY}Player list prefix: ${ChatColor.RESET}${ChatColor.translateAlternateColorCodes('&', rank.playerListPrefix)}Example")
+                    messages.add("${ChatColor.GRAY}Display name prefix: ${ChatColor.RESET}${ChatColor.translateAlternateColorCodes('&', rank.displayNamePrefix)}Example")
                     messages.add("${ChatColor.GRAY}Default: ${ChatColor.RESET}${rank.default}")
+                    messages.add("${ChatColor.GRAY}Hidden: ${ChatColor.RESET}${rank.hidden}")
                     messages.add("")
 
                     if (rank.groups.isEmpty()) {

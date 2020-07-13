@@ -166,7 +166,7 @@ class Rank(var id: String,
     }
 
     fun getDisplayColor(): String {
-        return ChatColor.COLOR_CHAR + displayColor
+        return ChatColor.translateAlternateColorCodes('&', displayColor)
     }
 
     fun setDisplayColor(color: ChatColor) {
@@ -180,9 +180,8 @@ class Rank(var id: String,
     fun processPlaceholders(string: String): String {
         return string.replace("{rankDisplayName}", displayName)
             .replace("{rankColor}", displayColor)
-            .replace("{rankDisplayColor}", displayColor)
             .replace("{rankPrefix}", prefix)
-            .replace("{rankPlayerListPrefix}", playerListPrefix)
+            .replace("{rankPlayerListNamePrefix}", playerListPrefix)
             .replace("{rankDisplayNamePrefix}", displayNamePrefix)
     }
 
