@@ -10,7 +10,21 @@ class RankHandler {
     }
 
     private val ranks = ArrayList<Rank>()
-    private val defaultRank = Rank("default", "Default", Integer.MAX_VALUE, hashSetOf(), "", "", "", hashSetOf(), true, false, hashSetOf("GLOBAL"))
+
+    private val defaultRank = Rank(
+        id = "default",
+        displayName = "Default",
+        displayColor = "&f",
+        displayOrder = Integer.MAX_VALUE,
+        prefix = "",
+        playerListPrefix = "",
+        displayNamePrefix = "",
+        permissions = hashSetOf(),
+        inheritedRanks = hashSetOf(),
+        default = true,
+        hidden = false,
+        groups = hashSetOf("GLOBAL")
+    )
 
     fun loadRanks() {
         for (fetchedRank in EvilPermissions.instance.database.fetchRanks()) {

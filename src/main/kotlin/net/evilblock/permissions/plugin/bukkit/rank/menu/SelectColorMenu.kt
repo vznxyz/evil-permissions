@@ -31,7 +31,7 @@ class SelectColorMenu(private val parent: EditAttributesMenu, private val rank: 
         override fun getButtonItem(player: Player): ItemStack {
             val itemStack = super.getButtonItem(player)
 
-            if (rank.gameColor.replace("&", "") == "4") {
+            if (rank.getDisplayColorChar() == "4") {
                 GlowEnchantment.addGlow(itemStack)
             }
 
@@ -43,7 +43,7 @@ class SelectColorMenu(private val parent: EditAttributesMenu, private val rank: 
         }
 
         override fun getDamageValue(player: Player): Byte {
-            val colorChar = if (rank.gameColor.isEmpty()) 'f' else rank.gameColor.toCharArray()[1]
+            val colorChar = if (rank.displayColor.isEmpty()) 'f' else rank.getDisplayColorChar()[0]
             return (ColorMap.woolMap[ChatColor.getByChar(colorChar)] ?: 15).toByte()
         }
 
@@ -81,7 +81,7 @@ class SelectColorMenu(private val parent: EditAttributesMenu, private val rank: 
         override fun clicked(player: Player, slot: Int, clickType: ClickType, view: InventoryView) {
             player.closeInventory()
 
-            rank.gameColor = "&" + color.char
+            rank.displayColor = "&" + color.char
 
             BukkitPlugin.instance.server.scheduler.runTaskAsynchronously(BukkitPlugin.instance) {
                 EvilPermissions.instance.database.saveRank(rank)

@@ -39,7 +39,7 @@ class GrantMenu(val user: User) : Menu("Grant ${user.getPlayerListPrefix() + use
         override fun getButtonItem(player: Player): ItemStack {
             val itemStack = super.getButtonItem(player)
 
-            if (rank.gameColor.replace("&", "") == "4") {
+            if (rank.getDisplayColorChar() == "4") {
                 GlowEnchantment.addGlow(itemStack)
             }
 
@@ -47,7 +47,7 @@ class GrantMenu(val user: User) : Menu("Grant ${user.getPlayerListPrefix() + use
         }
 
         override fun getName(player: Player): String {
-            var name = rank.gameColor + rank.displayName
+            var name = rank.getColoredDisplayName()
 
             if (rank.prefix.isNotBlank()) {
                 name = name + " " + rank.prefix
@@ -79,7 +79,7 @@ class GrantMenu(val user: User) : Menu("Grant ${user.getPlayerListPrefix() + use
 
         override fun getDamageValue(player: Player): Byte {
             return try {
-                (ColorMap.dyeMap[ChatColor.getByChar(rank.gameColor.replace("&", ""))]?: 15).toByte()
+                (ColorMap.dyeMap[ChatColor.getByChar(rank.getDisplayColorChar())]?: 15).toByte()
             } catch (e: Exception) {
                 return 15.toByte()
             }

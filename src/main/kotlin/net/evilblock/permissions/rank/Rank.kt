@@ -8,17 +8,40 @@ import kotlin.collections.HashSet
 
 class Rank(var id: String,
            var displayName: String,
+           var displayColor: String,
            var displayOrder: Int,
-           var permissions: HashSet<String>,
+           /**
+            * The prefix that can be used in chat formatting.
+            */
            var prefix: String,
+           /**
+            * The prefix that gets prepended to [org.bukkit.entity.Player.getPlayerListName].
+            */
            var playerListPrefix: String,
-           var gameColor: String,
+           /**
+            * The prefix that gets prepended to [org.bukkit.entity.Player.getDisplayName].
+            */
+           var displayNamePrefix: String,
+           var permissions: HashSet<String>,
            var inheritedRanks: HashSet<Rank>,
            var default: Boolean,
            var hidden: Boolean,
            var groups: HashSet<String>) {
 
-    constructor(name: String) : this(name, name, 999, hashSetOf(), "", "", "&f", hashSetOf(), false, false, hashSetOf("GLOBAL"))
+    constructor(name: String) : this(
+        id = name,
+        displayName = name,
+        displayColor = "&f",
+        displayOrder = 999,
+        prefix = "",
+        playerListPrefix = "",
+        displayNamePrefix = "&f",
+        permissions = hashSetOf<String>(),
+        inheritedRanks = hashSetOf(),
+        default = false,
+        hidden = false,
+        groups = hashSetOf("GLOBAL")
+    )
 
     /**
      * If this rank can be granted by the given [issuer].
@@ -76,7 +99,7 @@ class Rank(var id: String,
      * Gets the colored [displayName].
      */
     fun getColoredDisplayName(): String {
-        return gameColor.replace('&', '\u00A7') + displayName
+        return displayColor.replace('&', '\u00A7') + displayName
     }
 
     fun getChatPrefix(): String {
@@ -141,14 +164,28 @@ class Rank(var id: String,
         return null
     }
 
+    fun getDisplayColorChar(): String {
+        return displayColor.toCharArray()[1].toString()
+    }
+
+    fun processPlaceholders(string: String): String {
+        return string.replace("{rankDisplayName}", displayName)
+            .replace("{rankColor}", displayColor)
+            .replace("{rankDisplayColor}", displayColor)
+            .replace("{rankPrefix}", prefix)
+            .replace("{rankPlayerListPrefix}", playerListPrefix)
+            .replace("{rankDisplayNamePrefix}", displayNamePrefix)
+    }
+
     fun copyFrom(otherRank: Rank) {
         this.id = otherRank.id
         this.displayName = otherRank.displayName
+        this.displayColor = otherRank.displayColor
         this.displayOrder = otherRank.displayOrder
         this.permissions = otherRank.permissions
         this.prefix = otherRank.prefix
         this.playerListPrefix = otherRank.playerListPrefix
-        this.gameColor = otherRank.gameColor
+        this.displayNamePrefix = otherRank.displayNamePrefix
         this.default = otherRank.default
         this.hidden = otherRank.hidden
         this.groups = otherRank.groups

@@ -136,7 +136,7 @@ class RanksMenu(val group: String) : PaginatedMenu() {
             val itemStack = super.getButtonItem(player)
 
             val isBulkSelected = parent.bulkSelectionEnabled && parent.bulkSelection.contains(rank)
-            val isDarkRed = rank.gameColor.replace("&", "") == "4"
+            val isDarkRed = rank.getDisplayColorChar() == "4"
 
             if (isBulkSelected || isDarkRed) {
                 GlowEnchantment.addGlow(itemStack)
@@ -162,7 +162,7 @@ class RanksMenu(val group: String) : PaginatedMenu() {
             description.add("${ChatColor.GRAY}Display order: ${ChatColor.RESET}${rank.displayOrder}")
             description.add("${ChatColor.GRAY}Prefix: ${ChatColor.RESET}${rank.prefix}Example")
             description.add("${ChatColor.GRAY}Player List Prefix: ${ChatColor.RESET}${rank.playerListPrefix}Example")
-            description.add("${ChatColor.GRAY}Game Color: ${ChatColor.RESET}${rank.gameColor}${rank.gameColor}")
+            description.add("${ChatColor.GRAY}Game Color: ${ChatColor.RESET}${rank.displayColor}&${rank.getDisplayColorChar()}")
             description.add("${ChatColor.GRAY}Default: ${ChatColor.RESET}${rank.default}")
             description.add("")
             description.add("${ChatColor.YELLOW}${ChatColor.BOLD}Groups")
@@ -189,7 +189,7 @@ class RanksMenu(val group: String) : PaginatedMenu() {
 
         override fun getDamageValue(player: Player): Byte {
             return try {
-                (ColorMap.woolMap[ChatColor.getByChar(rank.gameColor.replace("&", ""))]?: 15).toByte()
+                (ColorMap.woolMap[ChatColor.getByChar(rank.getDisplayColorChar())]?: 15).toByte()
             } catch (e: Exception) {
                 return 15.toByte()
             }
@@ -235,7 +235,7 @@ class RanksMenu(val group: String) : PaginatedMenu() {
                     messages.add("${ChatColor.GRAY}Display order: ${ChatColor.RESET}${rank.displayOrder}")
                     messages.add("${ChatColor.GRAY}Prefix: ${ChatColor.RESET}${ChatColor.translateAlternateColorCodes('&', rank.prefix)}Example")
                     messages.add("${ChatColor.GRAY}Player List Prefix: ${ChatColor.RESET}${ChatColor.translateAlternateColorCodes('&', rank.playerListPrefix)}Example")
-                    messages.add("${ChatColor.GRAY}Game Color: ${ChatColor.RESET}${ChatColor.translateAlternateColorCodes('&', rank.gameColor)}${rank.gameColor}")
+                    messages.add("${ChatColor.GRAY}Game Color: ${ChatColor.RESET}${rank.displayColor}&${rank.getDisplayColorChar()}")
                     messages.add("${ChatColor.GRAY}Default: ${ChatColor.RESET}${rank.default}")
                     messages.add("")
 

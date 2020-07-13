@@ -57,9 +57,11 @@ class BukkitUserListeners : Listener {
 
                 val format = BukkitPlugin.instance.config.getString("chat-format")
                     .replace("{rankDisplayName}", activeRank.displayName)
+                    .replace("{rankColor}", activeRank.displayColor)
+                    .replace("{rankDisplayColor}", activeRank.displayColor)
+                    .replace("{rankPrefix}", activeRank.prefix)
                     .replace("{rankPlayerListPrefix}", activeRank.playerListPrefix)
-                    .replace("{rankChatPrefix}", activeRank.prefix)
-                    .replace("{rankColor}", activeRank.gameColor)
+                    .replace("{rankDisplayNamePrefix}", activeRank.displayNamePrefix)
 
                     event.format = ChatColor.translateAlternateColorCodes('&', format)
             }

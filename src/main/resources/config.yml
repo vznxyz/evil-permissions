@@ -8,12 +8,15 @@ format-chat: false
 # 'rankColor' = the rank's color
 chat-format: "{rankChatPrefix}%s&r: %s"
 
-# If set to true, each player's rank prefix will be included in their display name.
-# If set to false, each player's display name will be their active rank's color followed by their username.
-use-prefix-in-display-name: false
-
-# If set to true, we'll edit the player's tab-list username.
-set-player-list-name: false
+players:
+  # Should we set the player's display name?
+  set-display-name: false
+  # The format for the player's display name.
+  display-name-format: ""
+  # Should we set the player's player-list name?
+  set-player-list-name: false
+  # The format for the player's player-list name.
+  player-list-name-format: ""
 
 # The rank groups that are active on this server. Players that are assigned ranks that aren't active won't
 # receive any of the permissions from that rank.

@@ -121,7 +121,7 @@ object RankCommands {
     @JvmStatic
     fun list(sender: CommandSender) {
         for (rank in EvilPermissions.instance.rankHandler.getRanks().sortedBy { rank -> rank.displayOrder }) {
-            sender.sendMessage("${ChatColor.translateAlternateColorCodes('&', rank.gameColor)}${rank.displayName}")
+            sender.sendMessage(rank.getColoredDisplayName())
         }
     }
 

@@ -94,7 +94,7 @@ class SelectInheritanceMenu(private val parent: EditAttributesMenu, private val 
             val itemStack = super.getButtonItem(player)
 
             val isInherited = parent.rank.inheritedRanks.contains(rank)
-            val isDarkRed = rank.gameColor.replace("&", "") == "4"
+            val isDarkRed = rank.getDisplayColorChar() == "4"
 
             if (isInherited || isDarkRed) {
                 GlowEnchantment.addGlow(itemStack)
@@ -118,7 +118,7 @@ class SelectInheritanceMenu(private val parent: EditAttributesMenu, private val 
 
         override fun getDamageValue(player: Player): Byte {
             return try {
-                (ColorMap.woolMap[ChatColor.getByChar(rank.gameColor.replace("&", ""))]?: 15).toByte()
+                (ColorMap.woolMap[ChatColor.getByChar(rank.getDisplayColorChar())]?: 15).toByte()
             } catch (e: Exception) {
                 return 15.toByte()
             }
