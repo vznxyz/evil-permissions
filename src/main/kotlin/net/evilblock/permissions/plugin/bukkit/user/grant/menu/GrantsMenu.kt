@@ -74,7 +74,7 @@ class GrantsMenu(internal val target: User) : PaginatedMenu() {
         }
 
         override fun getName(player: Player): String {
-            return grant.rank.gameColor + StringUtils.capitalize(grant.rank.displayName.toLowerCase())
+            return StringUtils.capitalize(grant.rank.getColoredDisplayName())
         }
 
         override fun getDescription(player: Player): List<String> {

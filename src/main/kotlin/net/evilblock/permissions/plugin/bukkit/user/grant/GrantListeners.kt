@@ -23,7 +23,7 @@ class GrantListeners : Listener {
             event.player.sendMessage(
                 "${ChatColor.GREEN}You've been granted the ${ChatColor.translateAlternateColorCodes(
                     '&',
-                    event.grant.rank.gameColor + event.grant.rank.displayName
+                    event.grant.rank.getColoredDisplayName()
                 )} ${ChatColor.GREEN}rank for a period of ${ChatColor.YELLOW}$period${ChatColor.GREEN}."
             )
         }
