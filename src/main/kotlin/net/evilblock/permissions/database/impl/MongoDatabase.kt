@@ -3,9 +3,9 @@ package net.evilblock.permissions.database.impl
 import com.mongodb.MongoClient
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.ReplaceOptions
+import net.evilblock.cubed.Cubed
 import net.evilblock.pidgin.message.Message
 import net.evilblock.permissions.EvilPermissions
-import net.evilblock.permissions.rank.RankSerializer
 import net.evilblock.permissions.database.Database
 import net.evilblock.permissions.rank.Rank
 import net.evilblock.permissions.user.User
@@ -29,7 +29,7 @@ class MongoDatabase : Database {
         val document = ranksCollection.find(Document("id", id)).first()
         if (document != null) {
             try {
-                val rank = RankSerializer.deserialize(document)
+                val rank = Cubed.gson.fromJson(document.toJson(), Rank::class.java)
                 for (inheritedRankId in document.getList("inheritedRanks", String::class.java)) {
                     val inheritedRank = EvilPermissions.instance.rankHandler.getRankById(inheritedRankId)
                     if (inheritedRank != null) {
@@ -53,7 +53,8 @@ class MongoDatabase : Database {
         // fetch documents and deserialize into rank objects
         for (document in ranksCollection.find()) {
             try {
-                fetchedRanks[RankSerializer.deserialize(document)] = document.getList("inheritedRanks", String::class.java)
+                val rank = Cubed.gson.fromJson(document.toJson(), Rank::class.java)
+                fetchedRanks[rank] = document.getList("inheritedRanks", String::class.java)
             } catch (e: Exception) {
                 if (document.containsKey("id")) {
                     throw RuntimeException("Failed to load rank from document: " + document.getString("id"), e)
@@ -92,7 +93,7 @@ class MongoDatabase : Database {
     }
 
     override fun saveRank(rank: Rank) {
-        ranksCollection.replaceOne(Document("id", rank.id), RankSerializer.serialize(rank), ReplaceOptions().upsert(true))
+        ranksCollection.replaceOne(Document("id", rank.id), Document.parse(Cubed.gson.toJson(rank)), ReplaceOptions().upsert(true))
         EvilPermissions.instance.pidgin.sendMessage(Message("RANK_UPDATE", mapOf("id" to rank.id, "action" to "UPDATE")))
     }
 
