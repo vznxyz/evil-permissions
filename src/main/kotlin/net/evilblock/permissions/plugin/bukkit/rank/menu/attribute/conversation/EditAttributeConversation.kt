@@ -39,7 +39,7 @@ class EditAttributeConversation(private val parent: EditAttributesMenu, private 
                     conversationContext.forWhom.sendRawMessage("${ChatColor.RED}The player list prefix can't be longer than 16 characters.")
                 } else {
                     successful = true
-                    rank.playerListPrefix = s
+                    rank.playerListPrefix = ChatColor.translateAlternateColorCodes('&', s)
                 }
             }
         }

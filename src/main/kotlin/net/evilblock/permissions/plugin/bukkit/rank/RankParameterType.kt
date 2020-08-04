@@ -17,7 +17,7 @@ object RankParameterType : ParameterType<Rank?> {
         }
 
         try {
-            val rank = EvilPermissions.instance.rankHandler.getRankById(source)
+            val rank = RankHandler.getRankById(source)
             if (rank != null) {
                 return rank
             }

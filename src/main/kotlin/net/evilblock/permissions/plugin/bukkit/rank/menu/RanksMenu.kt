@@ -12,6 +12,7 @@ import net.evilblock.permissions.plugin.bukkit.BukkitPlugin
 import net.evilblock.permissions.rank.Rank
 import net.evilblock.permissions.plugin.bukkit.rank.menu.bulk.BulkActionMenu
 import net.evilblock.permissions.plugin.bukkit.util.ColorMap
+import net.evilblock.permissions.rank.RankHandler
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -71,7 +72,7 @@ class RanksMenu(val group: String) : PaginatedMenu() {
         val buttons = hashMapOf<Int, Button>()
 
         // populate buttons from ranks
-        val sortedRanks = EvilPermissions.instance.rankHandler.getRanksByGroup(group).sortedBy { it.displayOrder }
+        val sortedRanks = RankHandler.getRanksByGroup(group).sortedBy { it.displayOrder }
         for (rank in sortedRanks) {
             buttons[buttons.size] = RankButton(this, rank)
         }

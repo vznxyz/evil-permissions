@@ -18,6 +18,8 @@ interface Plugin {
 
     fun getJedisPool(): JedisPool
 
+    fun getDatabaseName(): String
+
     fun getMongoClient(): MongoClient
 
 }

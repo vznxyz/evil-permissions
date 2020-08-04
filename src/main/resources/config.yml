@@ -5,11 +5,7 @@ database-name: "wonder_permissions"
 format-chat: false
 
 # The format of chat messages. The chat format supports the following placeholders:
-# 'rankDisplayName' = the rank's display name
-# 'rankPlayerListPrefix' = the rank's player list prefix
-# 'rankChatPrefix' = the rank's chat prefix
-# 'rankColor' = the rank's color
-chat-format: "{rankChatPrefix}%s&r: %s"
+chat-format: "{rankPrefix}%s&r: %s"
 
 players:
   # Should we set the player's display name?

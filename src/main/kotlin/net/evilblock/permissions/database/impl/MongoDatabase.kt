@@ -1,25 +1,32 @@
 package net.evilblock.permissions.database.impl
 
+import com.google.gson.GsonBuilder
 import com.mongodb.MongoClient
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.ReplaceOptions
-import net.evilblock.cubed.Cubed
 import net.evilblock.pidgin.message.Message
 import net.evilblock.permissions.EvilPermissions
 import net.evilblock.permissions.database.Database
-import net.evilblock.permissions.plugin.bukkit.BukkitPlugin
 import net.evilblock.permissions.rank.Rank
+import net.evilblock.permissions.rank.RankHandler
 import net.evilblock.permissions.user.User
 import net.evilblock.permissions.user.UserSerializer
 import org.bson.Document
+import org.bson.json.JsonMode
+import org.bson.json.JsonWriterSettings
 import java.lang.RuntimeException
 import java.util.*
 
 class MongoDatabase : Database {
 
+    companion object {
+        private val GSON = GsonBuilder().serializeNulls().create()
+        private val JSON_WRITER_SETTINGS = JsonWriterSettings.builder().outputMode(JsonMode.RELAXED).build()
+    }
+
     private val client: MongoClient = EvilPermissions.instance.plugin.getMongoClient()
-    private val ranksCollection: MongoCollection<Document> = client.getDatabase(BukkitPlugin.instance.config.getString("database-name")).getCollection("ranks")
-    private val usersCollection: MongoCollection<Document> = client.getDatabase(BukkitPlugin.instance.config.getString("database-name")).getCollection("users")
+    private val ranksCollection: MongoCollection<Document> = client.getDatabase(EvilPermissions.instance.plugin.getDatabaseName()).getCollection("ranks")
+    private val usersCollection: MongoCollection<Document> = client.getDatabase(EvilPermissions.instance.plugin.getDatabaseName()).getCollection("users")
 
     init {
         ranksCollection.createIndex(Document("id", 1))
@@ -30,13 +37,13 @@ class MongoDatabase : Database {
         val document = ranksCollection.find(Document("id", id)).first()
         if (document != null) {
             try {
-                val rank = Cubed.gson.fromJson(document.toJson(), Rank::class.java)
+                val rank = GSON.fromJson(document.toJson(JSON_WRITER_SETTINGS), Rank::class.java)
 
                 // keep this check, it allows database compatibility between versions
                 rank.runCompatibilityFix()
 
                 for (inheritedRankId in document.getList("inheritedRanks", String::class.java)) {
-                    val inheritedRank = EvilPermissions.instance.rankHandler.getRankById(inheritedRankId)
+                    val inheritedRank = RankHandler.getRankById(inheritedRankId)
                     if (inheritedRank != null) {
                         rank.inheritedRanks.add(inheritedRank)
                     }
@@ -58,7 +65,7 @@ class MongoDatabase : Database {
         // fetch documents and deserialize into rank objects
         for (document in ranksCollection.find()) {
             try {
-                val rank = Cubed.gson.fromJson(document.toJson(), Rank::class.java)
+                val rank = GSON.fromJson(document.toJson(JSON_WRITER_SETTINGS), Rank::class.java)
 
                 // keep this check, it allows database compatibility between versions
                 rank.runCompatibilityFix()
@@ -75,7 +82,7 @@ class MongoDatabase : Database {
 
         // copy data to existing references
         for (deserializedRank in fetchedRanks.keys) {
-            val internalRank: Rank = EvilPermissions.instance.rankHandler.getRankById(deserializedRank.id) ?: deserializedRank
+            val internalRank: Rank = RankHandler.getRankById(deserializedRank.id) ?: deserializedRank
 
             if (deserializedRank !== internalRank) {
                 internalRank.copyFrom(deserializedRank)
@@ -84,7 +91,7 @@ class MongoDatabase : Database {
 
         // setup inheritance
         for (rankEntry in fetchedRanks) {
-            var internalRank: Rank? = EvilPermissions.instance.rankHandler.getRankById(rankEntry.key.id)
+            var internalRank: Rank? = RankHandler.getRankById(rankEntry.key.id)
 
             if (internalRank == null) {
                 internalRank = rankEntry.key
@@ -102,7 +109,7 @@ class MongoDatabase : Database {
     }
 
     override fun saveRank(rank: Rank) {
-        ranksCollection.replaceOne(Document("id", rank.id), Document.parse(Cubed.gson.toJson(rank)), ReplaceOptions().upsert(true))
+        ranksCollection.replaceOne(Document("id", rank.id), Document.parse(GSON.toJson(rank)), ReplaceOptions().upsert(true))
         EvilPermissions.instance.pidgin.sendMessage(Message("RANK_UPDATE", mapOf("id" to rank.id, "action" to "UPDATE")))
     }
 

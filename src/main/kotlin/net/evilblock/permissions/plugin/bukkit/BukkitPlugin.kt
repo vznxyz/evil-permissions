@@ -137,6 +137,10 @@ class BukkitPlugin : Plugin, JavaPlugin() {
         return Cubed.instance.redis.jedisPool!!
     }
 
+    override fun getDatabaseName(): String {
+        return config.getString("database-name")
+    }
+
     override fun getMongoClient(): MongoClient {
         return Cubed.instance.mongo.client
     }

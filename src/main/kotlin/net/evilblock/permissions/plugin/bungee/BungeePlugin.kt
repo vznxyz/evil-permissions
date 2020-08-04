@@ -19,6 +19,8 @@ import redis.clients.jedis.JedisPool
 import redis.clients.jedis.JedisPoolConfig
 import java.io.File
 import java.io.FileOutputStream
+import java.lang.StringBuilder
+import java.net.URI
 import java.util.*
 
 class BungeePlugin : net.evilblock.permissions.plugin.Plugin, Plugin() {
@@ -78,7 +80,13 @@ class BungeePlugin : net.evilblock.permissions.plugin.Plugin, Plugin() {
         val redisPassword = configuration.getString("redis.password")
         val redisDbId = configuration.getInt("redis.dbId")
 
-        jedisPool = JedisPool(JedisPoolConfig(), redisHost, redisPort, 5000, redisPassword, redisDbId)
+        val uriString = StringBuilder("redis://${redisHost}:${redisPort}?db=${redisDbId}")
+
+        if (redisPassword != null && redisPassword.isNotEmpty()) {
+            uriString.append("&password=${redisPassword}")
+        }
+
+        jedisPool = JedisPool(JedisPoolConfig(), URI(uriString.toString()), 3000)
 
         val mongoHost = configuration.getString("mongo.host")
         val mongoPort = configuration.getInt("mongo.port")
@@ -117,6 +125,10 @@ class BungeePlugin : net.evilblock.permissions.plugin.Plugin, Plugin() {
 
     override fun getJedisPool(): JedisPool {
         return jedisPool
+    }
+
+    override fun getDatabaseName(): String {
+        return configuration.getString("database-name")
     }
 
     override fun getMongoClient(): MongoClient {

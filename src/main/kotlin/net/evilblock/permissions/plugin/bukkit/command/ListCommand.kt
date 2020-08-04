@@ -3,6 +3,7 @@ package net.evilblock.permissions.plugin.bukkit.command
 import net.evilblock.cubed.command.Command
 import net.evilblock.permissions.EvilPermissions
 import net.evilblock.permissions.rank.Rank
+import net.evilblock.permissions.rank.RankHandler
 import net.evilblock.permissions.user.User
 import net.evilblock.permissions.util.Permissions
 import org.bukkit.Bukkit
@@ -15,7 +16,7 @@ object ListCommand {
     @Command(["who", "list"])
     @JvmStatic
     fun execute(sender: CommandSender) {
-        val visibleRanks = EvilPermissions.instance.rankHandler.getRanks()
+        val visibleRanks = RankHandler.getRanks()
             .filter { canSeeGroup(sender, it) }
             .sortedBy { it.displayOrder }
 
@@ -29,7 +30,7 @@ object ListCommand {
             .map { stylePlayer(sender, it) }
             .toMutableList()
 
-        val defaultPlayerListPrefix = EvilPermissions.instance.rankHandler.getDefaultRank().playerListPrefix.replace('&', '§')
+        val defaultPlayerListPrefix = RankHandler.getDefaultRank().playerListPrefix.replace('&', '§')
 
         // support non-loaded players (lol)
         val nonLoadedUsers = Bukkit.getOnlinePlayers()

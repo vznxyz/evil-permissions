@@ -1,6 +1,6 @@
 package net.evilblock.permissions.user.grant
 
-import net.evilblock.permissions.EvilPermissions
+import net.evilblock.permissions.rank.RankHandler
 import org.bson.Document
 import java.util.*
 
@@ -28,7 +28,7 @@ object GrantSerializer {
      */
     @JvmStatic
     fun <T : Grant> deserialize(document: Document, grant: T): T {
-        grant.rank = EvilPermissions.instance.rankHandler.getRankById(document.getString("rank")) ?: throw IllegalStateException("Couldn't deserialize grant because the rank doesn't exist")
+        grant.rank = RankHandler.getRankById(document.getString("rank")) ?: throw IllegalStateException("Couldn't deserialize grant because the rank doesn't exist")
         grant.reason = document.getString("reason")
         grant.issuedAt = document.getLong("issuedAt")!!
 

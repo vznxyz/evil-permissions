@@ -13,12 +13,12 @@ object RankMessageListeners : MessageListener {
 
         when (data["action"].asString) {
             "UPDATE" -> {
-                EvilPermissions.instance.rankHandler.performRankUpdate(id)
+                RankHandler.performRankUpdate(id)
             }
             "DELETE" -> {
-                val rank = EvilPermissions.instance.rankHandler.getRankById(id)
+                val rank = RankHandler.getRankById(id)
                 if (rank != null) {
-                    EvilPermissions.instance.rankHandler.removeRank(rank)
+                    RankHandler.removeRank(rank)
                 }
             }
         }

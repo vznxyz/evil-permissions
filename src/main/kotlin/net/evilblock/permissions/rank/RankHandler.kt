@@ -1,21 +1,18 @@
 package net.evilblock.permissions.rank
 
 import net.evilblock.permissions.EvilPermissions
-import org.bukkit.ChatColor
 import java.util.*
 
-class RankHandler {
+object RankHandler {
 
-    companion object {
-        val IGNORE: Rank = Rank("**IGNORE**")
-    }
+    val IGNORE: Rank = Rank("**IGNORE**")
 
     private val ranks = ArrayList<Rank>()
 
     private val defaultRank = Rank(
         id = "default",
         displayName = "Default",
-        displayColor = ChatColor.WHITE.toString(),
+        displayColor = "${Rank.COLOR_CHAR}f",
         displayOrder = Integer.MAX_VALUE,
         prefix = "",
         playerListPrefix = "",

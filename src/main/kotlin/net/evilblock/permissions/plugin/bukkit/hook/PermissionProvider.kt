@@ -4,6 +4,7 @@ import net.evilblock.cubed.util.bukkit.Tasks
 import net.evilblock.permissions.EvilPermissions
 import net.evilblock.permissions.plugin.bukkit.BukkitPlugin
 import net.evilblock.permissions.plugin.bukkit.user.grant.event.GrantCreateEvent
+import net.evilblock.permissions.rank.RankHandler
 import net.evilblock.permissions.user.grant.Grant
 import net.milkbowl.vault.permission.Permission
 import org.bukkit.Bukkit
@@ -33,7 +34,7 @@ object PermissionProvider : Permission() {
     }
 
     override fun getGroups(): Array<String> {
-        return EvilPermissions.instance.rankHandler.getRanks().map { it.id }.toTypedArray()
+        return RankHandler.getRanks().map { it.id }.toTypedArray()
     }
 
     override fun getPlayerGroups(player: Player): Array<String> {
@@ -65,7 +66,7 @@ object PermissionProvider : Permission() {
 
     // TODO: ASYNC OFFLINE SUPPORT
     override fun getPrimaryGroup(world: String?, player: OfflinePlayer): String {
-        return EvilPermissions.instance.rankHandler.getDefaultRank().id
+        return RankHandler.getDefaultRank().id
     }
 
     override fun getPrimaryGroup(world: String?, playerName: String): String? {
@@ -75,7 +76,7 @@ object PermissionProvider : Permission() {
     }
 
     override fun groupAdd(world: World, group: String, permission: String): Boolean {
-        val rank = EvilPermissions.instance.rankHandler.getRankById(group)
+        val rank = RankHandler.getRankById(group)
 
         return if (rank != null) {
             val success = rank.permissions.add(permission)
@@ -91,12 +92,12 @@ object PermissionProvider : Permission() {
     }
 
     override fun groupHas(world: World, group: String, permission: String): Boolean {
-        val rank = EvilPermissions.instance.rankHandler.getRankById(group)
+        val rank = RankHandler.getRankById(group)
         return rank?.permissions?.contains(permission) ?: false
     }
 
     override fun groupRemove(world: World, group: String, permission: String): Boolean {
-        val rank = EvilPermissions.instance.rankHandler.getRankById(group)
+        val rank = RankHandler.getRankById(group)
 
         return if (rank != null) {
             val success = rank.permissions.remove(permission)
@@ -112,7 +113,7 @@ object PermissionProvider : Permission() {
     }
 
     override fun playerAddGroup(player: Player, group: String): Boolean {
-        val rank = EvilPermissions.instance.rankHandler.getRankById(group)
+        val rank = RankHandler.getRankById(group)
         if (rank == null) {
             BukkitPlugin.instance.logger.severe("[Vault Hook] Couldn't add group \"$group\" to player because it doesn't exist.")
             return false
@@ -145,7 +146,7 @@ object PermissionProvider : Permission() {
         }
 
         BukkitPlugin.instance.server.scheduler.runTaskAsynchronously(BukkitPlugin.instance) {
-            val rank = EvilPermissions.instance.rankHandler.getRankById(group)
+            val rank = RankHandler.getRankById(group)
             if (rank == null) {
                 BukkitPlugin.instance.logger.severe("[Vault Hook] Couldn't add group \"$group\" to player because it doesn't exist.")
                 return@runTaskAsynchronously
@@ -172,7 +173,7 @@ object PermissionProvider : Permission() {
 
     override fun playerAddGroup(world: World?, player: String, group: String): Boolean {
         BukkitPlugin.instance.server.scheduler.runTaskAsynchronously(BukkitPlugin.instance) {
-            val rank = EvilPermissions.instance.rankHandler.getRankById(group)
+            val rank = RankHandler.getRankById(group)
             if (rank == null) {
                 BukkitPlugin.instance.logger.severe("[Vault Hook] Couldn't add group \"$group\" to player because it doesn't exist.")
                 return@runTaskAsynchronously
@@ -382,7 +383,7 @@ object PermissionProvider : Permission() {
     }
 
     override fun groupAdd(world: String?, group: String, permission: String): Boolean {
-        val rank = EvilPermissions.instance.rankHandler.getRankById(group)
+        val rank = RankHandler.getRankById(group)
         if (rank != null) {
             return rank.permissions.add(permission)
         }
@@ -390,7 +391,7 @@ object PermissionProvider : Permission() {
     }
 
     override fun groupHas(world: String?, group: String, permission: String): Boolean {
-        val rank = EvilPermissions.instance.rankHandler.getRankById(group)
+        val rank = RankHandler.getRankById(group)
         if (rank != null) {
             return rank.permissions.contains(permission)
         }
@@ -398,7 +399,7 @@ object PermissionProvider : Permission() {
     }
 
     override fun groupRemove(world: String?, group: String, permission: String): Boolean {
-        val rank = EvilPermissions.instance.rankHandler.getRankById(group)
+        val rank = RankHandler.getRankById(group)
         if (rank != null) {
             return rank.permissions.remove(permission)
         }

@@ -1,9 +1,8 @@
 package net.evilblock.permissions.rank
 
+import com.google.gson.annotations.JsonAdapter
 import net.evilblock.permissions.EvilPermissions
-import net.evilblock.permissions.util.Permissions
-import org.bukkit.ChatColor
-import org.bukkit.entity.Player
+import net.evilblock.permissions.rank.serialize.RankSetSerializer
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
@@ -24,15 +23,20 @@ class Rank(var id: String,
             */
            var displayNamePrefix: String,
            var permissions: HashSet<String>,
+           @JsonAdapter(RankSetSerializer::class)
            var inheritedRanks: HashSet<Rank>,
            var default: Boolean,
            var hidden: Boolean,
            var groups: HashSet<String>) {
 
+    companion object {
+        val COLOR_CHAR = '§'
+    }
+
     constructor(name: String) : this(
         id = name,
         displayName = name,
-        displayColor = ChatColor.WHITE.toString(),
+        displayColor = "${COLOR_CHAR}f",
         displayOrder = 999,
         prefix = "",
         playerListPrefix = "",
@@ -43,25 +47,6 @@ class Rank(var id: String,
         hidden = false,
         groups = hashSetOf("GLOBAL")
     )
-
-    /**
-     * If this rank can be granted by the given [issuer].
-     */
-    fun canBeGranted(issuer: Player): Boolean {
-        if (!issuer.hasPermission(Permissions.GRANT)) {
-            return false
-        }
-
-        if (issuer.hasPermission(Permissions.GRANT + ".*")) {
-            return true
-        }
-
-        if (issuer.hasPermission(Permissions.GRANT + ".${id}")) {
-            return true
-        }
-
-        return false
-    }
 
     /**
      * Recursively gets all permissions of this rank and the ranks it inherits.
@@ -166,11 +151,11 @@ class Rank(var id: String,
     }
 
     fun getDisplayColor(): String {
-        return ChatColor.translateAlternateColorCodes('&', displayColor)
+        return displayColor.replace('&', COLOR_CHAR)
     }
 
-    fun setDisplayColor(color: ChatColor) {
-        displayColor = color.toString()
+    fun setDisplayColor(color: String) {
+        displayColor = color
     }
 
     fun getDisplayColorChar(): String {
@@ -208,7 +193,7 @@ class Rank(var id: String,
      */
     fun runCompatibilityFix() {
         if (displayColor == null) {
-            displayColor = ChatColor.WHITE.toString()
+            displayColor = "${COLOR_CHAR}f"
         }
         if (displayNamePrefix == null) {
             displayNamePrefix = ""

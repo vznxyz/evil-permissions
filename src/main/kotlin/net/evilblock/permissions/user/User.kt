@@ -2,6 +2,7 @@ package net.evilblock.permissions.user
 
 import net.evilblock.permissions.EvilPermissions
 import net.evilblock.permissions.rank.Rank
+import net.evilblock.permissions.rank.RankHandler
 import net.evilblock.permissions.user.grant.Grant
 import java.util.*
 import kotlin.collections.ArrayList
@@ -18,7 +19,7 @@ abstract class User(val uniqueId: UUID) {
     fun getCompoundedPermissions(): Set<String> {
         val permissions = HashSet<String>()
         permissions.addAll(this.permissions)
-        permissions.addAll(EvilPermissions.instance.rankHandler.getDefaultRank().getCompoundedPermissions())
+        permissions.addAll(RankHandler.getDefaultRank().getCompoundedPermissions())
 
         getGrantsByGroups(EvilPermissions.instance.plugin.getActiveGroups())
             .filter { grant -> grant.isActive() }
@@ -29,7 +30,7 @@ abstract class User(val uniqueId: UUID) {
     }
 
     fun getMappedCompoundedPermissions(): Map<Rank, Set<String>> {
-        val defaultRank = EvilPermissions.instance.rankHandler.getDefaultRank()
+        val defaultRank = RankHandler.getDefaultRank()
 
         val map: HashMap<Rank, HashSet<String>> = hashMapOf()
         defaultRank.getMappedCompoundedPermissions(map)
@@ -55,7 +56,7 @@ abstract class User(val uniqueId: UUID) {
     }
 
     fun getBestDisplayRank(): Rank {
-        return getBestDisplayGrant()?.rank ?: EvilPermissions.instance.rankHandler.getDefaultRank()
+        return getBestDisplayGrant()?.rank ?: RankHandler.getDefaultRank()
     }
 
     fun getBestDisplayGrant(): Grant? {

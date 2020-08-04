@@ -16,7 +16,6 @@ class EvilPermissions(val plugin: Plugin) {
 
     val database: Database
     val userHandler: UserHandler
-    val rankHandler: RankHandler
     val pidgin: Pidgin
 
     init {
@@ -28,8 +27,7 @@ class EvilPermissions(val plugin: Plugin) {
         userHandler = UserHandler()
         plugin.getLogger().info("Loaded user handler")
 
-        rankHandler = RankHandler()
-        rankHandler.loadRanks()
+        RankHandler.loadRanks()
         plugin.getLogger().info("Loaded rank handler")
 
         pidgin = Pidgin("EVIL_PERMISSIONS", plugin.getJedisPool(), PidginOptions(async = true))

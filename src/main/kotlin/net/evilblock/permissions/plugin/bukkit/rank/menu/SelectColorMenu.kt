@@ -15,7 +15,7 @@ import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
 
-class SelectColorMenu(private val parent: EditAttributesMenu, private val rank: Rank) : Menu("Select Game Color") {
+class SelectColorMenu(private val parent: EditAttributesMenu, private val rank: Rank) : Menu("Select Color") {
 
     override fun getButtons(player: Player): Map<Int, Button> {
         val buttons = hashMapOf<Int, Button>()
@@ -48,7 +48,7 @@ class SelectColorMenu(private val parent: EditAttributesMenu, private val rank: 
         }
 
         override fun getName(player: Player): String {
-            return "${ChatColor.AQUA}Game Color"
+            return "${ChatColor.AQUA}Display Color"
         }
 
         override fun getDescription(player: Player): List<String> {
@@ -81,7 +81,7 @@ class SelectColorMenu(private val parent: EditAttributesMenu, private val rank: 
         override fun clicked(player: Player, slot: Int, clickType: ClickType, view: InventoryView) {
             player.closeInventory()
 
-            rank.setDisplayColor(color)
+            rank.setDisplayColor(color.toString())
 
             BukkitPlugin.instance.server.scheduler.runTaskAsynchronously(BukkitPlugin.instance) {
                 EvilPermissions.instance.database.saveRank(rank)

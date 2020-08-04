@@ -8,6 +8,7 @@ import net.evilblock.permissions.plugin.bukkit.rank.event.RankUpdateEvent
 import net.evilblock.permissions.rank.Rank
 import net.evilblock.permissions.plugin.bukkit.rank.menu.RankGroupsMenu
 import net.evilblock.permissions.plugin.bukkit.rank.menu.bulk.BulkSelection
+import net.evilblock.permissions.rank.RankHandler
 import net.evilblock.permissions.util.TimeUtils
 import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
@@ -120,7 +121,7 @@ object RankCommands {
     )
     @JvmStatic
     fun list(sender: CommandSender) {
-        for (rank in EvilPermissions.instance.rankHandler.getRanks().sortedBy { rank -> rank.displayOrder }) {
+        for (rank in RankHandler.getRanks().sortedBy { rank -> rank.displayOrder }) {
             sender.sendMessage(rank.getColoredDisplayName())
         }
     }

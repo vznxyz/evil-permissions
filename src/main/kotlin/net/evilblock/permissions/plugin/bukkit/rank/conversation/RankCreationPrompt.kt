@@ -4,6 +4,7 @@ import net.evilblock.permissions.EvilPermissions
 import net.evilblock.permissions.plugin.bukkit.BukkitPlugin
 import net.evilblock.permissions.plugin.bukkit.rank.menu.EditAttributesMenu
 import net.evilblock.permissions.plugin.bukkit.rank.menu.RanksMenu
+import net.evilblock.permissions.rank.RankHandler
 import org.bukkit.ChatColor
 import org.bukkit.conversations.ConversationContext
 import org.bukkit.conversations.Prompt
@@ -35,12 +36,12 @@ class RankCreationPrompt : StringPrompt() {
             return Prompt.END_OF_CONVERSATION
         }
 
-        if (EvilPermissions.instance.rankHandler.getRankById(s) != null) {
+        if (RankHandler.getRankById(s) != null) {
             conversationContext.forWhom.sendRawMessage("${ChatColor.RED}A rank by that ID already exists.")
             return Prompt.END_OF_CONVERSATION
         }
 
-        val rank = EvilPermissions.instance.rankHandler.createRank(s)
+        val rank = RankHandler.createRank(s)
 
         conversationContext.forWhom.sendRawMessage("${ChatColor.GREEN}Created new rank.")
 

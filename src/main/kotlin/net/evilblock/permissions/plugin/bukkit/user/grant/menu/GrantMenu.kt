@@ -9,6 +9,8 @@ import net.evilblock.permissions.rank.Rank
 import net.evilblock.permissions.user.User
 import net.evilblock.permissions.plugin.bukkit.user.grant.conversation.GrantCreationReasonPrompt
 import net.evilblock.permissions.plugin.bukkit.util.ColorMap
+import net.evilblock.permissions.rank.RankHandler
+import net.evilblock.permissions.util.Permissions
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.conversations.ConversationFactory
@@ -23,15 +25,34 @@ class GrantMenu(val user: User) : Menu("Grant ${user.getPlayerListPrefix() + use
     override fun getButtons(player: Player): Map<Int, Button> {
         val buttons = hashMapOf<Int, Button>()
 
-        for (rank in EvilPermissions.instance.rankHandler.getRanks().filter { it.isActiveOnServer() }.sortedBy { it.displayOrder }) {
+        for (rank in RankHandler.getRanks().filter { it.isActiveOnServer() }.sortedBy { it.displayOrder }) {
             if (rank.default) continue
 
-            if (rank.canBeGranted(player)) {
+            if (canBeGranted(player, rank)) {
                 buttons[buttons.size] = GrantRankButton(rank, user)
             }
         }
 
         return buttons
+    }
+
+    /**
+     * If the given [rank] can be granted by the given [issuer].
+     */
+    private fun canBeGranted(issuer: Player, rank: Rank): Boolean {
+        if (!issuer.hasPermission(Permissions.GRANT)) {
+            return false
+        }
+
+        if (issuer.hasPermission(Permissions.GRANT + ".*")) {
+            return true
+        }
+
+        if (issuer.hasPermission(Permissions.GRANT + ".${rank.id}")) {
+            return true
+        }
+
+        return false
     }
 
     private class GrantRankButton(private val rank: Rank, private val user: User) : Button() {

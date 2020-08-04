@@ -3,6 +3,7 @@ package net.evilblock.permissions.plugin.bukkit.hook
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import net.evilblock.permissions.EvilPermissions
 import net.evilblock.permissions.plugin.bukkit.BukkitPlugin
+import net.evilblock.permissions.rank.RankHandler
 import org.bukkit.entity.Player
 
 /**
@@ -87,17 +88,17 @@ class EvilPlaceholderExtension : PlaceholderExpansion() {
 
         // %evilperms_rank_name%
         if (identifier == "rank_name") {
-            return user?.getBestDisplayRank()?.displayName ?: EvilPermissions.instance.rankHandler.getDefaultRank().displayName
+            return user?.getBestDisplayRank()?.displayName ?: RankHandler.getDefaultRank().displayName
         }
 
         // %evilperms_rank_name_colored%
         if (identifier == "rank_name_colored") {
-            return user?.getBestDisplayRank()?.getColoredDisplayName() ?: EvilPermissions.instance.rankHandler.getDefaultRank().getColoredDisplayName()
+            return user?.getBestDisplayRank()?.getColoredDisplayName() ?: RankHandler.getDefaultRank().getColoredDisplayName()
         }
 
         // %evilperms_rank_prefix%
         if (identifier == "rank_prefix") {
-            return user?.getBestDisplayRank()?.getChatPrefix() ?: EvilPermissions.instance.rankHandler.getDefaultRank().getChatPrefix()
+            return user?.getBestDisplayRank()?.getChatPrefix() ?: RankHandler.getDefaultRank().getChatPrefix()
         }
 
         return null

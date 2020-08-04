@@ -9,6 +9,7 @@ import net.evilblock.permissions.EvilPermissions
 import net.evilblock.permissions.plugin.bukkit.rank.event.RankUpdateEvent
 import net.evilblock.permissions.plugin.bukkit.util.ColorMap
 import net.evilblock.permissions.rank.Rank
+import net.evilblock.permissions.rank.RankHandler
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -56,7 +57,7 @@ class SelectInheritanceMenu(private val parent: EditAttributesMenu, private val 
     override fun getAllPagesButtons(player: Player): Map<Int, Button> {
         val buttons = hashMapOf<Int, Button>()
 
-        val sortedRanks = EvilPermissions.instance.rankHandler.getRanks().sortedBy { it.displayOrder }
+        val sortedRanks = RankHandler.getRanks().sortedBy { it.displayOrder }
         for (rank in sortedRanks) {
             if (rank == this.rank) {
                 continue
