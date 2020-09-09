@@ -4,8 +4,8 @@ description: Powerful permissions by simple design
 author: joeleoli
 main: net.evilblock.permissions.plugin.bukkit.BukkitPlugin
 depend:
-  - Vault
   - Cubed
 softdepend:
   - PlaceholderAPI
   - MVdWPlaceholderAPI
+loadbefore: [Vault]

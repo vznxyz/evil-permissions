@@ -9,14 +9,14 @@ import net.evilblock.permissions.plugin.Plugin
 import net.evilblock.permissions.plugin.PluginEventHandler
 import net.evilblock.permissions.plugin.bukkit.command.ListCommand
 import net.evilblock.permissions.plugin.bukkit.command.ReloadCommand
-import net.evilblock.permissions.plugin.bukkit.user.command.UserResetCommand
+import net.evilblock.permissions.plugin.bukkit.hook.EvilPlaceholderExtension
 import net.evilblock.permissions.plugin.bukkit.hook.MVdWPlaceholderHook
 import net.evilblock.permissions.plugin.bukkit.hook.PermissionProvider
-import net.evilblock.permissions.plugin.bukkit.hook.EvilPlaceholderExtension
 import net.evilblock.permissions.plugin.bukkit.rank.RankCommands
 import net.evilblock.permissions.plugin.bukkit.rank.RankListeners
 import net.evilblock.permissions.plugin.bukkit.rank.RankParameterType
-import net.evilblock.permissions.plugin.bukkit.user.*
+import net.evilblock.permissions.plugin.bukkit.user.BukkitUser
+import net.evilblock.permissions.plugin.bukkit.user.command.UserResetCommand
 import net.evilblock.permissions.plugin.bukkit.user.command.parameter.UserParameterType
 import net.evilblock.permissions.plugin.bukkit.user.grant.GrantCommands
 import net.evilblock.permissions.plugin.bukkit.user.grant.GrantListeners
@@ -26,11 +26,14 @@ import net.evilblock.permissions.plugin.bukkit.user.task.UserApplyTask
 import net.evilblock.permissions.plugin.bukkit.user.task.UserSaveTask
 import net.evilblock.permissions.rank.Rank
 import net.evilblock.permissions.user.User
+import net.milkbowl.vault.permission.Permission
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
 import redis.clients.jedis.JedisPool
 import java.util.*
+
 
 class BukkitPlugin : Plugin, JavaPlugin() {
 
@@ -51,22 +54,14 @@ class BukkitPlugin : Plugin, JavaPlugin() {
         Cubed.instance.configureOptions(CubedOptions(requireRedis = true, requireMongo = true))
 
         // initialize core now that we can read from config
-        EvilPermissions(this)
+        EvilPermissions(this).initialLoad()
+        EvilPermissions.instance.pidgin.registerListener(BukkitUserMessageListeners)
 
         loadCommands()
-        logger.info("Loaded commands")
-
         loadListeners()
-        logger.info("Loaded listeners")
-
         loadTasks()
-        logger.info("Loaded tasks")
 
-        loadPidgin()
-        logger.info("Loaded pidgin listeners")
-
-        PermissionProvider.hook()
-        logger.info("Hooked into Vault")
+        server.servicesManager.register(Permission::class.java, PermissionProvider(), this, ServicePriority.Lowest)
 
         if (server.pluginManager.getPlugin("PlaceholderAPI") != null) {
             EvilPlaceholderExtension().register()
@@ -100,10 +95,6 @@ class BukkitPlugin : Plugin, JavaPlugin() {
     private fun loadTasks() {
         server.scheduler.runTaskTimerAsynchronously(this, UserApplyTask(), 20L, 20L)
         server.scheduler.runTaskTimerAsynchronously(this, UserSaveTask(), 20L * 15, 20L * 15)
-    }
-
-    private fun loadPidgin() {
-        EvilPermissions.instance.pidgin.registerListener(BukkitUserMessageListeners)
     }
 
     /**

@@ -14,25 +14,20 @@ class EvilPermissions(val plugin: Plugin) {
         @JvmStatic lateinit var instance: EvilPermissions
     }
 
-    val database: Database
-    val userHandler: UserHandler
-    val pidgin: Pidgin
+    lateinit var database: Database
+    lateinit var userHandler: UserHandler
+    lateinit var pidgin: Pidgin
 
-    init {
+    fun initialLoad() {
         instance = this
 
         database = MongoDatabase()
-        plugin.getLogger().info("Loaded database")
-
         userHandler = UserHandler()
-        plugin.getLogger().info("Loaded user handler")
 
         RankHandler.loadRanks()
-        plugin.getLogger().info("Loaded rank handler")
 
         pidgin = Pidgin("EVIL_PERMISSIONS", plugin.getJedisPool(), PidginOptions(async = true))
         pidgin.registerListener(RankMessageListeners)
-        plugin.getLogger().info("Loaded pidgin")
     }
 
 }

@@ -11,15 +11,9 @@ import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
 import org.bukkit.entity.Player
-import org.bukkit.plugin.ServicePriority
 import java.util.*
 
-object PermissionProvider : Permission() {
-
-    @JvmStatic
-    fun hook() {
-        Bukkit.getServicesManager().register(Permission::class.java, this, BukkitPlugin.instance, ServicePriority.Highest)
-    }
+class PermissionProvider : Permission() {
 
     override fun isEnabled(): Boolean {
         return true

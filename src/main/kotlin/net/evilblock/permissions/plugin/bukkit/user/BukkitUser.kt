@@ -5,6 +5,7 @@ import net.evilblock.permissions.EvilPermissions
 import net.evilblock.permissions.plugin.bukkit.BukkitPlugin
 import net.evilblock.permissions.user.User
 import org.bukkit.Bukkit
+import org.bukkit.metadata.FixedMetadataValue
 import org.bukkit.permissions.PermissionAttachment
 import java.util.*
 
@@ -50,14 +51,18 @@ class BukkitUser(uuid: UUID) : User(uuid) {
                     }
                 }
 
+                val bestDisplayRank = getBestDisplayRank()
+
+                player.setMetadata("EP_PLAYER_LIST_NAME", FixedMetadataValue(BukkitPlugin.instance, bestDisplayRank.playerListPrefix))
+
                 if (plugin.config.getBoolean("players.set-display-name", true)) {
-                    player.displayName = getBestDisplayRank()
+                    player.displayName = bestDisplayRank
                         .processPlaceholders(plugin.config.getString("players.display-name-format"))
                         .replace("{playerName}", player.name)
                 }
 
                 if (plugin.config.getBoolean("players.set-player-list-name", true)) {
-                    var playerListName = getBestDisplayRank()
+                    var playerListName = bestDisplayRank
                         .processPlaceholders(plugin.config.getString("players.player-list-name-format"))
                         .replace("{playerName}", player.name)
 

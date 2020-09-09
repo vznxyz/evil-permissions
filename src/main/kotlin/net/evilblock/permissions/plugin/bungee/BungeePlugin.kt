@@ -37,21 +37,16 @@ class BungeePlugin : net.evilblock.permissions.plugin.Plugin, Plugin() {
     override fun onEnable() {
         instance = this
 
-        // initialize the configuration
         saveDefaultConfig()
         loadConfig()
 
         loadStore()
-        logger.info("Loaded store")
 
         // initialize core
-        EvilPermissions(this)
+        EvilPermissions(this).initialLoad()
+        EvilPermissions.instance.pidgin.registerListener(BungeeUserMessageListeners)
 
         loadListeners()
-        logger.info("Loaded listeners")
-
-        loadPidgin()
-        logger.info("Loaded pidgin listeners")
     }
 
     private fun loadConfig() {
@@ -80,13 +75,27 @@ class BungeePlugin : net.evilblock.permissions.plugin.Plugin, Plugin() {
         val redisPassword = configuration.getString("redis.password")
         val redisDbId = configuration.getInt("redis.dbId")
 
-        val uriString = StringBuilder("redis://${redisHost}:${redisPort}?db=${redisDbId}")
+        try {
+            val password = if (redisPassword != null && redisPassword.isNotEmpty()) {
+                redisPassword
+            } else {
+                null
+            }
 
-        if (redisPassword != null && redisPassword.isNotEmpty()) {
-            uriString.append("&password=${redisPassword}")
+            jedisPool = JedisPool(JedisPoolConfig(), redisHost, redisPort, 5000, password, redisDbId)
+
+            if (password != null) {
+                try {
+                    jedisPool.resource.use { redis ->
+                        redis.auth(redisPassword)
+                    }
+                } catch (e: Exception) {
+                    throw RuntimeException("Could not authenticate", e)
+                }
+            }
+        } catch (e: Exception) {
+            throw RuntimeException("Couldn't connect to redis server at ${redisHost}:${redisPort}", e)
         }
-
-        jedisPool = JedisPool(JedisPoolConfig(), URI(uriString.toString()), 3000)
 
         val mongoHost = configuration.getString("mongo.host")
         val mongoPort = configuration.getInt("mongo.port")
@@ -105,10 +114,6 @@ class BungeePlugin : net.evilblock.permissions.plugin.Plugin, Plugin() {
 
     private fun loadListeners() {
         proxy.pluginManager.registerListener(this, BungeeUserListeners())
-    }
-
-    private fun loadPidgin() {
-        EvilPermissions.instance.pidgin.registerListener(BungeeUserMessageListeners)
     }
 
     override fun getEventHandler(): PluginEventHandler {
