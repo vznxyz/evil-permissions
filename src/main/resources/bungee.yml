@@ -1,4 +1,0 @@
-name: EvilPermissions
-author: joeleoli
-version: 1.0
-main: net.evilblock.permissions.plugin.bungee.BungeePlugin

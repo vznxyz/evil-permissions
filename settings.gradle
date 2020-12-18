@@ -1,2 +1,5 @@
-rootProject.name = 'evil-permissions'
+rootProject.name = 'permissions-parent'
+include 'bukkit'
+include 'proxy'
+include 'common'
 
