@@ -1,11 +1,12 @@
-name: EvilPermissions
+name: CoreXD
 version: 1.0
-description: Powerful permissions by simple design
+description: lol
 author: joeleoli
-main: net.evilblock.permissions.bukkit.BukkitPlugin
+main: com.minexd.core.bukkit.BukkitPlugin
 depend:
   - Cubed
 softdepend:
+  - Vault
   - PlaceholderAPI
   - MVdWPlaceholderAPI
 loadbefore: [Vault]

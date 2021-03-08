@@ -1,4 +1,6 @@
-name: EvilPermissions
+name: CoreXD
 author: joeleoli
 version: 1.0
-main: net.evilblock.permissions.proxy.BungeePlugin
+main: com.minexd.core.proxy.ProxyPlugin
+depend:
+  - Cubed

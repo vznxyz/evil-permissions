@@ -1,5 +1,6 @@
-# What database should we use?
-database-name: "wonder_permissions"
+# The API settings to use when making API requests
+api-url: "http://127.0.0.1:4567/api/"
+api-key: "test"
 
 # If set to true, chat messages will be formatted using the format specified at 'chat-format'.
 format-chat: false

@@ -1,5 +1,4 @@
-rootProject.name = 'permissions-parent'
+rootProject.name = 'core-parent'
 include 'bukkit'
 include 'proxy'
 include 'common'
-
